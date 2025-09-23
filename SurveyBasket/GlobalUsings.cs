@@ -14,3 +14,4 @@ global using SurveyBasket.Services;
 global using System.Reflection;
 global using System.Text;
 global using SurveyBasket.Contract.Polls; 
+global using suurveybasket.Models;

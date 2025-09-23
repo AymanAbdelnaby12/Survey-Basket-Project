@@ -1,8 +1,12 @@
 ﻿
+using Microsoft.AspNetCore.Authorization;
+
 namespace SurveyBasket.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]   
+    [ApiController]
+    [Authorize]
+
     public class PollsController : ControllerBase
     {
         private readonly IPollService _pollService;
@@ -37,7 +41,7 @@ namespace SurveyBasket.Controllers
         {
             var newPoll =await _pollService.AddAsync(request.Adapt<Poll>(), cancellationToken);
 
-            return CreatedAtAction(nameof(Get), new { id = newPoll.Id }, newPoll);
+            return CreatedAtAction(nameof(Get), new { id = newPoll.Id }, newPoll.Adapt<PollResponse>());
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, CreatePollRequest request,CancellationToken cancellationToken) 
