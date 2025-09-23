@@ -2,8 +2,7 @@
 {
     public record CreatePollRequest( 
         string Title,
-        string Description,
-        bool IsPublished,
+        string Description, 
         DateOnly CreatedAt,
         DateOnly EndAt 
     ); 
