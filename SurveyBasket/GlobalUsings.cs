@@ -1,3 +1,16 @@
 ﻿global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
 global using SurveyBasket.Models;
+global using FluentValidation;
+global using Mapster;
+global using MapsterMapper;
+global using Microsoft.AspNetCore.Identity;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.IdentityModel.Tokens;
+global using SharpGrip.FluentValidation.AutoValidation.Mvc.Extensions;
+global using SurveyBasket.Authentication;
+global using SurveyBasket.Persistance;
+global using SurveyBasket.Services;
+global using System.Reflection;
+global using System.Text;
+global using SurveyBasket.Contract.Polls; 

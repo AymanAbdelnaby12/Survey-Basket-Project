@@ -6,14 +6,14 @@ namespace SurveyBasket.Persistance.EntitiesConfig
     {
         public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Poll> builder)
         {
-            builder.HasIndex(p => p.Id);
+            builder.HasIndex(x => x.Title)
+                .IsUnique(); 
 
-            builder.Property(p => p.Title)
-                .IsRequired()
+            builder.Property(x => x.Title)
                 .HasMaxLength(100);
 
-            builder.Property(p => p.Description)
-                .HasMaxLength(1500); 
+            builder.Property(x => x.Description)
+                .HasMaxLength(1500);
         }
     } 
 }

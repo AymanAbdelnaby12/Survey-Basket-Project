@@ -12,7 +12,7 @@ using SurveyBasket.Persistance;
 namespace SurveyBasket.Persistance.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250920180048_initailCreate")]
+    [Migration("20250921160303_initailCreate")]
     partial class initailCreate
     {
         /// <inheritdoc />
@@ -33,16 +33,16 @@ namespace SurveyBasket.Persistance.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("CreatedAt")
+                        .HasColumnType("date");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(1500)
                         .HasColumnType("nvarchar(1500)");
 
-                    b.Property<DateTime>("EndAt")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("EndAt")
+                        .HasColumnType("date");
 
                     b.Property<bool>("IsPublished")
                         .HasColumnType("bit");
@@ -54,7 +54,8 @@ namespace SurveyBasket.Persistance.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id");
+                    b.HasIndex("Title")
+                        .IsUnique();
 
                     b.ToTable("Polls");
                 });

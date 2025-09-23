@@ -1,70 +1,78 @@
 ﻿
+
+using Microsoft.EntityFrameworkCore;
+using SurveyBasket.Models;
+using SurveyBasket.Persistance;
+
 namespace SurveyBasket.Services
 {
     public class PollService : IPollService
     {
-        private static readonly List<Poll> _polls = [
-            new Poll{Id = 1,Title = "Poll 1", Description = "My first poll" }
-        ];
+        private readonly AppDbContext _dbContext;
 
-        public IEnumerable<Poll> GetAll() => _polls;
-
-        public Poll? Get(int id) => _polls.SingleOrDefault(x => x.Id == id);
-
-        public Poll Add(Poll poll)
+        public PollService(AppDbContext dbContext)
         {
-            poll.Id = _polls.Count + 1;
-            _polls.Add(poll);
+            _dbContext = dbContext;
+        } 
+
+        public async Task<IEnumerable<Poll>> GetAllAsync(CancellationToken cancellationToken) =>
+            await _dbContext.Polls.ToListAsync(cancellationToken);
+
+        public async Task<Poll?> GetByIdAsync(int id,CancellationToken cancellationToken) =>
+           await _dbContext.Polls.FirstOrDefaultAsync(x => x.Id == id,cancellationToken);
+
+        public async Task<Poll> AddAsync(Poll poll, CancellationToken cancellationToken)
+        {
+            var existingPoll = await _dbContext.Polls.AnyAsync(x => x.Title == poll.Title, cancellationToken);
+            if (existingPoll)
+            {
+                throw new InvalidOperationException($"A poll with the title '{poll.Title}' already exists.");
+            }
+            await _dbContext.Polls.AddAsync(poll, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
             return poll;
-        }
-
-        public bool Update(int id, Poll poll)
+        } 
+        
+        public async Task<bool> UpdateAsync(int id, Poll poll, CancellationToken cancellationToken)
         {
-            var currentPoll=Get(id);
-            if (currentPoll is null)
-            { 
-                return false;
-            } 
-            currentPoll.Title = poll.Title;
-            currentPoll.Description = poll.Description;
-            return true;
-        }
-
-        public bool Delete(int id)
-        {
-            var poll=Get(id);
-            if (poll is null)
+            var existingPoll = await GetByIdAsync(id, cancellationToken);
+            if (existingPoll is null)
             {
                 return false;
             }
-            _polls.Remove(poll);
+            existingPoll.Title = poll.Title;
+            existingPoll.Description = poll.Description; 
+            existingPoll.CreatedAt= poll.CreatedAt;
+            existingPoll.EndAt = poll.EndAt;
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
             return true;
+
         }
 
+        public async Task<bool> DeleteAsync(int id,CancellationToken cancellationToken)
+        {
+            var poll = await GetByIdAsync(id,cancellationToken);
+            if (poll is null) return false; 
 
-        //public bool Update(int id, Poll poll)
-        //{
-        //    var currentPoll = Get(id);
+            _dbContext.Remove(poll);
 
-        //    if (currentPoll is null)
-        //        return false;
+            await _dbContext.SaveChangesAsync(cancellationToken);
 
-        //    currentPoll.Title = poll.Title;
-        //    currentPoll.Description = poll.Description;
+            return true;
 
-        //    return true;
-        //}
+        }
 
-        //public bool Delete(int id)
-        //{
-        //    var poll = Get(id);
-
-        //    if (poll is null)
-        //        return false;
-
-        //    _polls.Remove(poll);
-
-        //    return true;
-        //}
+        public async Task<bool> TogglePublishStatusAsync(int id, CancellationToken cancellationToken)
+        {
+            var existingPoll = await GetByIdAsync(id, cancellationToken);
+            if (existingPoll is null)
+            {
+                return false;
+            }  
+            existingPoll.IsPublished = !existingPoll.IsPublished; 
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return true;
+        }
     }
 }

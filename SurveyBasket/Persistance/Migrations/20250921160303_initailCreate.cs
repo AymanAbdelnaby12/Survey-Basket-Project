@@ -20,8 +20,8 @@ namespace SurveyBasket.Persistance.Migrations
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1500)", maxLength: 1500, nullable: false),
                     IsPublished = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    EndAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateOnly>(type: "date", nullable: false),
+                    EndAt = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -29,9 +29,10 @@ namespace SurveyBasket.Persistance.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Polls_Id",
+                name: "IX_Polls_Title",
                 table: "Polls",
-                column: "Id");
+                column: "Title",
+                unique: true);
         }
 
         /// <inheritdoc />

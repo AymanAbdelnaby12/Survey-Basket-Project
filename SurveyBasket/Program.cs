@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SurveyBasket.Controllers;
 using SurveyBasket.Persistance;
 
 namespace SurveyBasket
@@ -9,23 +10,23 @@ namespace SurveyBasket
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddDependancies(builder.Configuration);
+            builder.Services.AddDependencies(builder.Configuration); 
+            builder.Services.AddSwaggerServices();
 
-            builder.Services.AddControllers();
-            builder.Services.AddOpenApi();
-
-            var app = builder.Build();
-             
-            app.MapOpenApi();
-            app.UseSwaggerUI(options =>
+            var app = builder.Build(); 
+            app.MapOpenApi(); 
+            if (app.Environment.IsDevelopment())
             {
-                options.SwaggerEndpoint("/openapi/v1.json", "SurveyBasket API v1");
-                options.RoutePrefix = "swagger";
-            });
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
 
             app.UseHttpsRedirection();
+            app.UseRouting();       
+            app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
+
 
             app.Run();
         }
