@@ -1,4 +1,6 @@
 ﻿
+using Azure.Core;
+using Microsoft.EntityFrameworkCore;
 using SurveyBasket.Errors; 
 
 namespace SurveyBasket.Services
@@ -29,35 +31,38 @@ namespace SurveyBasket.Services
 
         }
 
-        public async Task<PollResponse> AddAsync(PollRequest request, CancellationToken cancellationToken)
+        public async Task<Result<PollResponse>> AddAsync(PollRequest request, CancellationToken cancellationToken)
         {
             var existingPoll = await _dbContext.Polls.AnyAsync(x => x.Title == request.Title, cancellationToken);
             if (existingPoll)
-            {
-                throw new InvalidOperationException($"A poll with the title '{request.Title}' already exists.");
-            }
+               return Result.Failure<PollResponse>(PollErrors.DuplicatedPollTitle);
 
             var newPoll = request.Adapt<Poll>();
             _dbContext.Polls.Add(newPoll);
             await _dbContext.SaveChangesAsync(cancellationToken);
-            return newPoll.Adapt<PollResponse>();
+            return Result.Success(newPoll.Adapt<PollResponse>());
 
         } 
         
-        public async Task<Result> UpdateAsync(int id, PollRequest poll, CancellationToken cancellationToken)
+        public async Task<Result> UpdateAsync(int id, PollRequest request, CancellationToken cancellationToken)
         {
-            var existingPoll = await _dbContext.Polls.FindAsync(id, cancellationToken);
-            if (existingPoll is null)
-            {
-                return Result.Failure(PollErrors.PollNotFound);
-            }
+            var isExistingTitle = await _dbContext.Polls.AnyAsync(x => x.Title == request.Title && x.Id != id, cancellationToken: cancellationToken);
 
-            existingPoll.Title = poll.Title;
-            existingPoll.Description = poll.Description;
-            existingPoll.CreatedAt = poll.CreatedAt;
-            existingPoll.EndAt = poll.EndAt;
+            if (isExistingTitle)
+                return Result.Failure<PollResponse>(PollErrors.DuplicatedPollTitle);
+
+            var currentPoll = await _dbContext.Polls.FindAsync(id, cancellationToken);
+
+            if (currentPoll is null)
+                return Result.Failure(PollErrors.PollNotFound);
+
+            currentPoll.Title = request.Title;
+            currentPoll.Description = request.Description;
+            currentPoll.CreatedAt = request.CreatedAt;
+            currentPoll.EndAt = request.EndAt;
 
             await _dbContext.SaveChangesAsync(cancellationToken);
+
             return Result.Success();
 
         }

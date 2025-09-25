@@ -22,12 +22,16 @@ namespace SurveyBasket
             }
 
             app.UseHttpsRedirection();
+
             app.UseRouting();       
+
             app.UseAuthentication();
+
             app.UseAuthorization(); 
+
             app.MapControllers();
 
-
+            app.UseExceptionHandler();
             app.Run();
         }
     }

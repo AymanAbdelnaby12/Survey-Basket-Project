@@ -14,4 +14,6 @@ global using SurveyBasket.Services;
 global using System.Reflection;
 global using System.Text;
 global using SurveyBasket.Contract.Polls; 
-global using SurveyBasket.Abstractions;
+global using SurveyBasket.Abstractions; 
+global using Microsoft.Extensions.Options;
+global using SurveyBasket.Contract.Auth;

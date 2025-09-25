@@ -1,5 +1,4 @@
-﻿
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 
 namespace SurveyBasket.Controllers
 {
@@ -37,8 +36,8 @@ namespace SurveyBasket.Controllers
         CancellationToken cancellationToken)
         {
             var newPoll = await _pollService.AddAsync(request, cancellationToken);
-
-            return CreatedAtAction(nameof(Get), new { id = newPoll.Id }, newPoll);
+            if (newPoll.IsSuccess) return CreatedAtAction(nameof(Get), new { id = newPoll.Value.Id }, newPoll.Value);
+            return newPoll.ToProblem(StatusCodes.Status400BadRequest);
         }
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, PollRequest request,CancellationToken cancellationToken) 

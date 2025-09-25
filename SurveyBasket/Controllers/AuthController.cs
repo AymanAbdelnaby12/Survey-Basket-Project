@@ -1,10 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using SurveyBasket.Contract.Auth; 
-using SurveyBasket.Services;
-
+﻿
 namespace SurveyBasket.Controllers
 {
     [Route("api/[controller]")]
