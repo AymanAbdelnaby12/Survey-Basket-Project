@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace SurveyBasket.Persistance.EntitiesConfig
 {
@@ -14,6 +15,10 @@ namespace SurveyBasket.Persistance.EntitiesConfig
 
             builder.Property(x => x.Description)
                 .HasMaxLength(1500);
+
+            builder.Property(p => p.Id)
+                .ValueGeneratedOnAdd();
+
         }
     } 
 }

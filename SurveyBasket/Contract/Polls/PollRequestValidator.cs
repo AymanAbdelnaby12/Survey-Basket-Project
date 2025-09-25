@@ -2,7 +2,7 @@
 
 namespace SurveyBasket.Contract.Polls;
 
-public class LoginRequestValidator : AbstractValidator<CreatePollRequest>
+public class LoginRequestValidator : AbstractValidator<PollRequest>
 {
     public LoginRequestValidator()
     {
@@ -21,10 +21,10 @@ public class LoginRequestValidator : AbstractValidator<CreatePollRequest>
 
         RuleFor(x => x)
             .Must(HasValidDates)
-            .WithName(nameof(CreatePollRequest.EndAt))
+            .WithName(nameof(PollRequest.EndAt))
             .WithMessage("{PropertyName} must be greater than or equals start date");
     }
-    private bool HasValidDates(CreatePollRequest pollRequest)
+    private bool HasValidDates(PollRequest pollRequest)
     {
         return pollRequest.EndAt >= pollRequest.CreatedAt;
     }

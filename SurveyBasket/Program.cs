@@ -11,7 +11,7 @@ namespace SurveyBasket
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDependencies(builder.Configuration); 
-            builder.Services.AddSwaggerServices();
+            builder.Services.AddSwaggerServices(); 
 
             var app = builder.Build(); 
             app.MapOpenApi(); 
@@ -24,7 +24,7 @@ namespace SurveyBasket
             app.UseHttpsRedirection();
             app.UseRouting();       
             app.UseAuthentication();
-            app.UseAuthorization();
+            app.UseAuthorization(); 
             app.MapControllers();
 
 

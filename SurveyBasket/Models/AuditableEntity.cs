@@ -1,4 +1,4 @@
-﻿namespace suurveybasket.Models;
+﻿namespace SurveyBasket.Models;
 
 public class AuditableEntity
 {
