@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using SurveyBasket.Errors;
 
 namespace SurveyBasket.Controllers
 {
@@ -18,9 +19,14 @@ namespace SurveyBasket.Controllers
         [HttpGet("")]
         public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
         {
-            var polls=await _pollService.GetAllAsync(cancellationToken);
-            var response=polls.Adapt<IEnumerable<PollResponse>>(); 
-            return Ok(response);
+            var polls=await _pollService.GetAllAsync(cancellationToken); 
+            return Ok(polls);
+        }
+        [HttpGet("current")]
+        public async Task<IActionResult> GetCurrent(CancellationToken cancellationToken)
+        {
+            var polls = await _pollService.GetCurrentAsync(cancellationToken);
+            return Ok(polls);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id,CancellationToken cancellationToken)
@@ -28,7 +34,7 @@ namespace SurveyBasket.Controllers
             var pollResult =await _pollService.GetByIdAsync(id,cancellationToken);
            
             if (pollResult.IsSuccess) return Ok(pollResult.Value);
-            return pollResult.ToProblem(StatusCodes.Status404NotFound);
+            return pollResult.ToProblem(StatusCodes.Status404NotFound); 
         }
          
         [HttpPost("")]
@@ -46,7 +52,9 @@ namespace SurveyBasket.Controllers
             if (updatedPoll.IsSuccess)
                 return NoContent();
 
-            return updatedPoll.ToProblem(StatusCodes.Status404NotFound);
+            return updatedPoll.Error.Equals(PollErrors.DuplicatedPollTitle)
+                ? updatedPoll.ToProblem(StatusCodes.Status409Conflict)
+                : updatedPoll.ToProblem(StatusCodes.Status404NotFound);
            
         }
         [HttpDelete("{id}")]

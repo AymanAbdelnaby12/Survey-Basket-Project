@@ -17,3 +17,8 @@ global using SurveyBasket.Contract.Polls;
 global using SurveyBasket.Abstractions; 
 global using Microsoft.Extensions.Options;
 global using SurveyBasket.Contract.Auth;
+global using SurveyBasket.Contracts.Questions;
+global using Microsoft.AspNetCore.Authorization;
+global using SurveyBasket.Errors;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;
+

@@ -8,8 +8,9 @@ namespace SurveyBasket.Models
         public string Description { get; set; } = string.Empty;
         public bool IsPublished { get; set; }   
         public DateOnly CreatedAt { get; set; }
-        public DateOnly EndAt { get; set; } 
+        public DateOnly EndAt { get; set; }
 
-
+        public ICollection<Question> Questions { get; set; } = [];
+        public ICollection<Vote> Votes { get; set; } = [];
     }
 }

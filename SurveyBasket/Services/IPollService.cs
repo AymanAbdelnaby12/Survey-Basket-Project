@@ -2,7 +2,8 @@
 {
     public interface IPollService
     { 
-        Task<IEnumerable<Poll>> GetAllAsync(CancellationToken cancellationToken);
+        Task<IEnumerable<PollResponse>> GetAllAsync(CancellationToken cancellationToken);
+        Task<IEnumerable<PollResponse>> GetCurrentAsync(CancellationToken cancellationToken);
         Task<Result<PollResponse>> GetByIdAsync(int id, CancellationToken cancellationToken);
         Task<Result<PollResponse>> AddAsync(PollRequest request, CancellationToken cancellationToken); 
         Task<Result> UpdateAsync(int id, PollRequest poll,CancellationToken cancellationToken);

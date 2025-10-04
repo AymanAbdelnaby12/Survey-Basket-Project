@@ -14,11 +14,22 @@ namespace SurveyBasket.Services
             _dbContext = dbContext;
         } 
 
-        public async Task<IEnumerable<Poll>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<IEnumerable<PollResponse>> GetAllAsync(CancellationToken cancellationToken)
         {
-            return await _dbContext.Polls.ToListAsync(cancellationToken);
+            return await _dbContext.Polls
+                .AsNoTracking()
+                .ProjectToType<PollResponse>()
+                .ToListAsync(cancellationToken);
         }
+        public async Task<IEnumerable<PollResponse>> GetCurrentAsync(CancellationToken cancellationToken)
+        {
 
+            return await _dbContext.Polls
+                .Where(x=>x.IsPublished && x.CreatedAt <= DateOnly.FromDateTime(DateTime.UtcNow) && x.EndAt >= DateOnly.FromDateTime(DateTime.UtcNow))
+                .AsNoTracking()
+                .ProjectToType<PollResponse>()
+                .ToListAsync(cancellationToken);
+        }
         public async Task<Result<PollResponse>> GetByIdAsync(int id,CancellationToken cancellationToken)
         {
             var poll = await _dbContext.Polls.FindAsync( id,cancellationToken);
